@@ -103,6 +103,18 @@ class SignInButton extends StatelessWidget {
   Widget build(BuildContext context) {
     _setButtonSize();
     _createStyle(context);
+
+    bool imageLeft = imagePosition == ImagePosition.left;
+    List<Widget> rowElements = [];
+
+    if (imageLeft) {
+      rowElements.add(_buildImageElement());
+      rowElements.add(_buildTextElement());
+    } else {
+      rowElements.add(_buildTextElement());
+      rowElements.add(_buildImageElement());
+    }
+
     return !mini
         ? MaterialButton(
             color: btnColor,
@@ -111,24 +123,10 @@ class SignInButton extends StatelessWidget {
             onPressed: onPressed,
             elevation: elevation,
             child: Container(
-              width: width,
+              padding: EdgeInsets.symmetric(vertical: padding!),
               child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: imagePosition == ImagePosition.left
-                    ? MainAxisAlignment.start
-                    : MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(padding!),
-                    child:
-                        imagePosition == ImagePosition.left ? _image : _text(),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(padding!),
-                    child:
-                        imagePosition == ImagePosition.left ? _text() : _image,
-                  ),
-                ],
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: rowElements,
               ),
             ),
           )
@@ -141,6 +139,23 @@ class SignInButton extends StatelessWidget {
             padding: EdgeInsets.all(padding!),
             shape: CircleBorder(),
           );
+  }
+
+  Widget _buildImageElement() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: padding!),
+      child:_image,
+    );
+  }
+
+  Widget _buildTextElement() {
+    return Flexible(
+      fit: FlexFit.loose,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: padding!),
+        child: _text(),
+      ),
+    );
   }
 
   Widget _text() {
@@ -314,6 +329,12 @@ class SignInButton extends StatelessWidget {
         btnText ??= 'Sign in with Instagram';
         btnTextColor ??= Colors.black87;
         btnColor ??= Colors.white;
+        break;
+
+      case ButtonType.email:
+        btnText ??= 'Sign in with Email';
+        btnTextColor ??= Colors.white;
+        btnColor ??= Colors.grey.shade700;
         break;
     }
   }
